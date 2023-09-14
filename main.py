@@ -1,16 +1,38 @@
-# This is a sample Python script.
+from flask import Flask, render_template, request
+from flask_wtf.csrf import CSRFProject
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+from form import RegistrationForm
 
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+app = Flask(__name__)
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+app.config['SECRET KEY'] = '121292kimono'
+csrf = CSRFProject(app)
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+app.config['SQLALCHEMY_DATABASE_URL'] = 'sqlite:///mydatabase_user.db'
+db.init_app(app)
+
+
+@app.route('/')
+def index():
+    return 'Homework3'
+
+@app.cli.command('/init')
+def init():
+    db.create_all()
+    print('OK')
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = RegistrationForm()
+    if request.method == 'POST' and form.validate():
+        first_name = form.first_name.data
+        last_name = form.last_name.data
+        email = form.email.data
+        password = form.password.data
+        return f'You are success registration'
+    return render_template('login.html', form=form)
+
+
+if __name__== '__main__':
+    app.run(debug=True)
